@@ -47,6 +47,7 @@ RUN pip3 install ansible-cmdb
 # Install Ansible inventory file.
 RUN mkdir -p /etc/ansible
 RUN echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 VOLUME ["/sys/fs/cgroup"]
 CMD ["/usr/lib/systemd/systemd"]
