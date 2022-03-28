@@ -1,4 +1,5 @@
-#from Geerling's Cent8 example, add ansible-cmdd
+#from Geerling's Cent8 example, add ansible-cmdb, add soft link to python. 
+# load inventory etc from vol mnt
 FROM centos:8
 LABEL maintainer="pmo"
 ENV container=docker
