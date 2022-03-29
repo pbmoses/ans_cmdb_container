@@ -1,0 +1,43 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: httpd-for-cmdb
+    app.kubernetes.io/component: httpd-for-cmdb
+    app.kubernetes.io/instance: httpd-for-cmdb
+    app.kubernetes.io/name: httpd-for-cmdb
+    app.kubernetes.io/part-of: ans-cmdb-container-git-app
+    app.openshift.io/runtime: httpd
+    app.openshift.io/runtime-version: 2.4-el7
+  name: httpd-for-cmdb
+  namespace: ansible-cmdb
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: httpd-for-cmdb:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: https://github.com/sclorg/httpd-ex.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: httpd:2.4-el7
+        namespace: openshift
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+    - generic:
+        secretReference:
+          name: httpd-for-cmdb-generic-webhook-secret
+      type: Generic
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
