@@ -1,0 +1,41 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ans-cmdb-container-git
+    app.kubernetes.io/component: ans-cmdb-container-git
+    app.kubernetes.io/instance: ans-cmdb-container-git
+    app.kubernetes.io/name: ans-cmdb-container-git
+    app.kubernetes.io/part-of: ans-cmdb-container-git-app
+  name: ans-cmdb-container-git
+  namespace: ansible-cmdb
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: ans-cmdb-container-git:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: /
+    git:
+      uri: https://github.com/pbmoses/ans_cmdb_container.git
+    type: Git
+  strategy:
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+    type: Docker
+  successfulBuildsHistoryLimit: 5
+  triggers:
+    - generic:
+        secretReference:
+          name: ans-cmdb-container-git-generic-webhook-secret
+      type: Generic
+    - github:
+        secretReference:
+          name: ans-cmdb-container-git-github-webhook-secret
+      type: GitHub
+    - type: ConfigChange
