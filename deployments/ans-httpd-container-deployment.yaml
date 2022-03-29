@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: httpd-for-cmdb
+    app.kubernetes.io/component: httpd-for-cmdb
+    app.kubernetes.io/instance: httpd-for-cmdb
+    app.kubernetes.io/name: httpd-for-cmdb
+    app.kubernetes.io/part-of: ans-cmdb-container-git-app
+    app.openshift.io/runtime: httpd
+    app.openshift.io/runtime-version: 2.4-el7
+  name: httpd-for-cmdb
+  namespace: ansible-cmdb
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: httpd-for-cmdb
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: httpd-for-cmdb
+        deploymentconfig: httpd-for-cmdb
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/ansible-cmdb/httpd-for-cmdb@sha256:1a4799e42a428dfb040e026ba7d878171bca3c43e17b5adc9d74b75d1d0c1e26
+          imagePullPolicy: Always
+          name: httpd-for-cmdb
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /opt/app-root/src
+              name: v1
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: v1
+          persistentVolumeClaim:
+            claimName: cmdb-main
